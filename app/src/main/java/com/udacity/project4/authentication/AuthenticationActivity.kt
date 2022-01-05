@@ -17,57 +17,57 @@ import timber.log.Timber
  */
 class AuthenticationActivity : AppCompatActivity() {
 
-    companion object {
-        const val SIGN_IN_RESULT_CODE = 1001
-    }
+	companion object {
+		const val SIGN_IN_RESULT_CODE = 1001
+	}
 
-    private val viewModel by viewModels<AuthenticationViewModel>()
+	private val viewModel by viewModels<AuthenticationViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ActivityAuthenticationBinding.inflate(layoutInflater).let { binding ->
-            setContentView(binding.root)
-            binding.lifecycleOwner = this
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		ActivityAuthenticationBinding.inflate(layoutInflater).let { binding ->
+			setContentView(binding.root)
+			binding.lifecycleOwner = this
 
-            binding.authButton.setOnClickListener {
-                startActivityForResult(
-                    AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
-                        arrayListOf(
-                            AuthUI.IdpConfig.EmailBuilder().build(),
-                            AuthUI.IdpConfig.GoogleBuilder().build()
-                        )
-                    ).build(), SIGN_IN_RESULT_CODE
-                )
-            }
+			binding.authButton.setOnClickListener {
+				startActivityForResult(
+					AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
+						arrayListOf(
+							AuthUI.IdpConfig.EmailBuilder().build(),
+							AuthUI.IdpConfig.GoogleBuilder().build()
+						)
+					).build(), SIGN_IN_RESULT_CODE
+				)
+			}
 
-            viewModel.authenticationState.observe(this) { authenticationState ->
-                when (authenticationState) {
-                    AuthenticationViewModel.AuthenticationState.AUTHENTICATED -> openReminder()
-                    else -> Timber.i("authenticationState: $authenticationState")
-                }
-            }
+			viewModel.authenticationState.observe(this) { authenticationState ->
+				when (authenticationState) {
+					AuthenticationViewModel.AuthenticationState.AUTHENTICATED -> openReminder()
+					else -> Timber.i("authenticationState: $authenticationState")
+				}
+			}
 
-        }
+		}
 
 //          TODO: If the user was authenticated, send him to RemindersActivity
 
 //          TODO: a bonus is to customize the sign in flow to look nice using :
-        //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
+		//https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
 
-    }
+	}
 
-    private fun openReminder() {
+	private fun openReminder() {
 
-    }
+	}
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SIGN_IN_RESULT_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Timber.i("Successfully signed in user")
-            } else {
-                Timber.i("Sign in unsuccessful ${IdpResponse.fromResultIntent(data)?.error?.errorCode}")
-            }
-        }
-    }
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if (requestCode == SIGN_IN_RESULT_CODE) {
+			if (resultCode == Activity.RESULT_OK) {
+				Timber.i("Successfully signed in user")
+			} else {
+				Timber.i("Sign in unsuccessful ${IdpResponse.fromResultIntent(data)?.error?.errorCode}")
+			}
+		}
+	}
 }

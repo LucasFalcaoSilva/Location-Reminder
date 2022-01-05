@@ -6,24 +6,24 @@ import timber.log.Timber
 
 class AuthenticationViewModel : ViewModel() {
 
-    enum class AuthenticationState {
-        AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
-    }
+	enum class AuthenticationState {
+		AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
+	}
 
-    val authenticationState = FirebaseUserLiveData().map { user ->
-        if (user != null) {
-            AuthenticationState.AUTHENTICATED
-        } else {
-            AuthenticationState.UNAUTHENTICATED
-        }
-    }
+	val authenticationState = FirebaseUserLiveData().map { user ->
+		if (user != null) {
+			AuthenticationState.AUTHENTICATED
+		} else {
+			AuthenticationState.UNAUTHENTICATED
+		}
+	}
 
-    init {
-        Timber.i("AuthenticationViewModel created!")
-    }
+	init {
+		Timber.i("AuthenticationViewModel created!")
+	}
 
-    override fun onCleared() {
-        super.onCleared()
-        Timber.i("AuthenticationViewModel destroyed!")
-    }
+	override fun onCleared() {
+		super.onCleared()
+		Timber.i("AuthenticationViewModel destroyed!")
+	}
 }
