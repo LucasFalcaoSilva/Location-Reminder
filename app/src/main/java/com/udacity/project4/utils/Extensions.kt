@@ -2,12 +2,16 @@ package com.udacity.project4.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
+import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseRecyclerViewAdapter
+import com.udacity.project4.locationreminders.RemindersActivity
 
 
 /**
@@ -55,4 +59,18 @@ fun View.fadeOut() {
 			this@fadeOut.visibility = View.GONE
 		}
 	})
+}
+
+fun Intent.clearStack() {
+	flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+}
+
+fun Activity.openIntent(cls: Class<*>) = Intent(this, cls).apply { clearStack() }
+
+fun Activity.openAuthentication() {
+	startActivity(openIntent(AuthenticationActivity::class.java))
+}
+
+fun Activity.openReminders() {
+	startActivity(openIntent(RemindersActivity::class.java))
 }
