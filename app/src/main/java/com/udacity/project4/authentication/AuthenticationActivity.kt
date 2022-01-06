@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
+import com.udacity.project4.R
 import com.udacity.project4.databinding.ActivityAuthenticationBinding
 import com.udacity.project4.utils.openReminders
 import timber.log.Timber
@@ -31,12 +32,16 @@ class AuthenticationActivity : AppCompatActivity() {
 
 			binding.authButton.setOnClickListener {
 				startActivityForResult(
-					AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
-						arrayListOf(
-							AuthUI.IdpConfig.EmailBuilder().build(),
-							AuthUI.IdpConfig.GoogleBuilder().build()
-						)
-					).build(), SIGN_IN_RESULT_CODE
+					AuthUI.getInstance()
+						.createSignInIntentBuilder()
+						.setAvailableProviders(
+							arrayListOf(
+								AuthUI.IdpConfig.EmailBuilder().build(),
+								AuthUI.IdpConfig.GoogleBuilder().build()
+							)
+						).setLogo(R.drawable.map)
+						.setTheme(R.style.LoginTheme)
+						.build(), SIGN_IN_RESULT_CODE
 				)
 			}
 
