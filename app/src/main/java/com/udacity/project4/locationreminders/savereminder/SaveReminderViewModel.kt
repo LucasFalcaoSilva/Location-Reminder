@@ -1,10 +1,13 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
+import com.udacity.project4.R.string
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.data.ReminderDataSource
@@ -21,6 +24,10 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 	val latitude = MutableLiveData<Double?>()
 	val longitude = MutableLiveData<Double?>()
 
+	private var _eventSave = MutableLiveData<Boolean>()
+	val eventSave: LiveData<Boolean>
+		get() = _eventSave
+
 	/**
 	 * Clear the live data objects to start fresh next time the view model gets called
 	 */
@@ -31,6 +38,8 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 		selectedPOI.value = null
 		latitude.value = null
 		longitude.value = null
+
+		_eventSave.value = false
 	}
 
 	/**
@@ -79,4 +88,21 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 		}
 		return true
 	}
+
+	fun setadas(currentLatLng: LatLng?) {
+		currentLatLng?.apply {
+			this@SaveReminderViewModel.latitude.value = latitude
+			this@SaveReminderViewModel.longitude.value = longitude
+
+			_eventSave.value = true
+
+		} ?: kotlin.run {
+			showSnackBarInt.value = string.err_select_location
+		}
+	}
+
+	fun onSaveComplete() {
+		_eventSave.value = false
+	}
+
 }
