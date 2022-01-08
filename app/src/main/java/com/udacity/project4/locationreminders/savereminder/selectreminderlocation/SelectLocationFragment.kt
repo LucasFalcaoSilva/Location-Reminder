@@ -21,8 +21,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
-import com.udacity.project4.R.string
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
@@ -37,7 +37,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
 	private lateinit var map: GoogleMap
 
-	private var currentLatLng: LatLng? = null
+	private var currentPOI: PointOfInterest? = null
 
 	companion object {
 		private const val REQUEST_LOCATION_PERMISSION = 1
@@ -71,7 +71,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 		this.map = map
 
 		map.setMapStyle()
-		map.setMapClick()
+		map.setPOIMapClick()
 
 		enableMyLocation()
 	}
@@ -105,7 +105,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 	}
 
 	private fun onLocationSelected() {
-		_viewModel.setadas(currentLatLng)
+		_viewModel.setLocation(currentPOI)
 	}
 
 	private fun enableMyLocation() {
@@ -142,17 +142,17 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 		}
 	}
 
-	private fun GoogleMap.setMapClick() {
-		setOnMapClickListener { latLng ->
-			currentLatLng = latLng
+	private fun GoogleMap.setPOIMapClick() {
+		setOnPoiClickListener { poi ->
+			currentPOI = poi
 			clear()
-			animateCamera(CameraUpdateFactory.newLatLng(latLng))
+			animateCamera(CameraUpdateFactory.newLatLng(poi.latLng))
 			addMarker(
 				MarkerOptions()
-					.position(latLng)
-					.title(getString(string.dropped_pin))
+					.position(poi.latLng)
+					.title(poi.name)
 					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-			)
+			)?.showInfoWindow()
 		}
 	}
 
