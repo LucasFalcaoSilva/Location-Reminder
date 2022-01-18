@@ -4,11 +4,14 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.location.GeofenceStatusCodes
+import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseRecyclerViewAdapter
 import com.udacity.project4.locationreminders.RemindersActivity
@@ -74,3 +77,12 @@ fun Activity.openAuthentication() {
 fun Activity.openReminders() {
 	startActivity(openIntent(RemindersActivity::class.java))
 }
+
+fun Resources.errorMessage(errorCode: Int) = getString(
+	when (errorCode) {
+		GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> R.string.geofence_not_available
+		GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> R.string.geofence_too_many_geofences
+		GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> R.string.geofence_too_many_pending_intents
+		else -> R.string.error_adding_geofence
+	}
+)
