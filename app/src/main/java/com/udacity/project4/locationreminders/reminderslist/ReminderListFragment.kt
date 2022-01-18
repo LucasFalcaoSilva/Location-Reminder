@@ -30,6 +30,7 @@ class ReminderListFragment : BaseFragment() {
 
 			binding.viewModel = _viewModel
 			binding.refreshLayout.setOnRefreshListener {
+				binding.refreshLayout.isRefreshing = false
 				_viewModel.loadReminders()
 			}
 		}

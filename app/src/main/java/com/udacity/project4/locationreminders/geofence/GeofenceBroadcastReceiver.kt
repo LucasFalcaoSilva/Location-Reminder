@@ -3,6 +3,8 @@ package com.udacity.project4.locationreminders.geofence
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import timber.log.Timber
+import timber.log.Timber.Forest
 
 /**
  * Triggered by the Geofence.  Since we can have many Geofences at once, we pull the request
@@ -21,7 +23,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 	}
 
 	override fun onReceive(context: Context, intent: Intent) {
-
+		Timber.v("GeofenceBroadcastReceiver")
 		if (intent.action == ACTION_GEOFENCE_EVENT) {
 			GeofenceTransitionsJobIntentService.enqueueWork(context, intent)
 		}

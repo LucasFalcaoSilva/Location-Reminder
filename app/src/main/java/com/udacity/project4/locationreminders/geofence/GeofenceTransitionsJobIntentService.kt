@@ -6,9 +6,9 @@ import androidx.core.app.JobIntentService
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.project4.R
+import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.errorMessage
 import com.udacity.project4.utils.sendNotification
@@ -27,6 +27,8 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 	override val coroutineContext: CoroutineContext
 		get() = Dispatchers.IO + coroutineJob
 
+	private val remindersLocalRepository by inject<ReminderDataSource>()
+
 	companion object {
 		private const val JOB_ID = 573
 
@@ -40,6 +42,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 	}
 
 	override fun onHandleWork(intent: Intent) {
+		Timber.v("onHandleWork")
 		val event = GeofencingEvent.fromIntent(intent)
 
 		if (event.hasError()) {
@@ -52,19 +55,19 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 		if (event.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
 			Timber.v(getString(R.string.geofence_entered))
 			event.triggeringGeofences.map {
+				Timber.v("triggeringGeofences ${it.requestId}")
 				sendNotification(it.requestId)
 			}
 		}
 	}
 
 	private fun sendNotification(requestId: String) {
-		//Get the local repository instance
-		val remindersLocalRepository: RemindersLocalRepository by inject()
-//        Interaction to the repository has to be through a coroutine scope
+		Timber.v("start sendNotification")
 		CoroutineScope(coroutineContext).launch(SupervisorJob()) {
 			//get the reminder with the request id
 			val result = remindersLocalRepository.getReminder(requestId)
 			if (result is Result.Success<ReminderDTO>) {
+				Timber.v("sendNotification ${result.data}")
 				val reminderDTO = result.data
 				//send a notification to the user with the reminder details
 				sendNotification(
@@ -77,6 +80,8 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 						reminderDTO.id
 					)
 				)
+			} else {
+				Timber.v("do not sendNotification")
 			}
 		}
 	}

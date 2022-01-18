@@ -25,9 +25,14 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 	val eventSave: LiveData<Boolean>
 		get() = _eventSave
 
+	private var _addGeofence = MutableLiveData<Boolean>()
+	val addGeofence: LiveData<Boolean>
+		get() = _addGeofence
+
 	init {
 		_reminderDataItem.value = ReminderDataItem()
 		_eventSave.value = false
+		_addGeofence.value = false
 	}
 
 	fun validateAndSaveReminder() {
@@ -43,6 +48,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 	 */
 	fun saveReminder(reminderData: ReminderDataItem) {
 		showLoading.value = true
+		_addGeofence.value = true
 		viewModelScope.launch {
 			dataSource.saveReminder(
 				ReminderDTO(
@@ -99,4 +105,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 		_eventSave.value = false
 	}
 
+	fun onAddfenceComplete() {
+		_addGeofence.value = false
+	}
 }
