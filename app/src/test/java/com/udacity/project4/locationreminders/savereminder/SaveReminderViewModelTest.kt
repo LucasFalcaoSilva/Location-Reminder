@@ -106,7 +106,7 @@ class SaveReminderViewModelTest {
 	}
 
 	@Test
-	fun remindersListViewModel_loading() = runBlockingTest {
+	fun saveReminderViewModelTest_loading() = runBlockingTest {
 		mainCoroutineRule.pauseDispatcher()
 		viewModel.saveReminder(
 			ReminderDataItem(

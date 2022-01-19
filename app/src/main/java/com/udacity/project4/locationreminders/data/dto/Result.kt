@@ -1,5 +1,8 @@
 package com.udacity.project4.locationreminders.data.dto
 
+import com.udacity.project4.locationreminders.data.dto.Result.Success
+
+
 
 /**
  * A sealed class that encapsulates successful outcome with a value of type [T]
@@ -10,3 +13,6 @@ sealed class Result<out T : Any> {
 	data class Error(val message: String?, val statusCode: Int? = null) :
 		Result<Nothing>()
 }
+
+val Result<*>.succeeded
+	get() = this is Success && data != null
