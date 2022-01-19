@@ -30,6 +30,11 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 		get() = _addGeofence
 
 	init {
+		reset()
+	}
+
+	fun reset(){
+		showSnackBarInt.value = 0
 		_reminderDataItem.value = ReminderDataItem()
 		_eventSave.value = false
 		_addGeofence.value = false
@@ -86,6 +91,10 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 			return false
 		}
 		return true
+	}
+
+	fun setReminderLocation(reminderData: ReminderDataItem) {
+		_reminderDataItem.value = reminderData
 	}
 
 	fun setLocation(location: PointOfInterest?) {
