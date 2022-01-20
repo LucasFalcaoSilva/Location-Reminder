@@ -34,10 +34,10 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 	}
 
 	fun reset(){
-		showSnackBarInt.value = 0
-		_reminderDataItem.value = ReminderDataItem()
-		_eventSave.value = false
-		_addGeofence.value = false
+		showSnackBarInt.postValue(0)
+		_reminderDataItem.postValue(ReminderDataItem())
+		_eventSave.postValue(false)
+		_addGeofence.postValue(false)
 	}
 
 	fun validateAndSaveReminder() {
@@ -103,7 +103,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 			_reminderDataItem.value?.longitude = latLng.longitude
 			_reminderDataItem.value?.location = name
 
-			_eventSave.value = true
+			_eventSave.postValue(true)
 
 		} ?: kotlin.run {
 			showSnackBarInt.value = string.err_select_location
@@ -111,10 +111,10 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
 	}
 
 	fun onSaveComplete() {
-		_eventSave.value = false
+		_eventSave.postValue(false)
 	}
 
 	fun onAddfenceComplete() {
-		_addGeofence.value = false
+		_addGeofence.postValue(false)
 	}
 }

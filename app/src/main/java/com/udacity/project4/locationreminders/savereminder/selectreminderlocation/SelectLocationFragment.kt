@@ -1,6 +1,7 @@
 package com.udacity.project4.locationreminders.savereminder.selectreminderlocation
 
-import android.Manifest
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -109,10 +110,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 	}
 
 	private fun enableMyLocation() {
-		if (ContextCompat.checkSelfPermission(
-				requireContext(),
-				Manifest.permission.ACCESS_FINE_LOCATION
-			) == PackageManager.PERMISSION_GRANTED
+		if (ContextCompat.checkSelfPermission(requireContext(), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+			ContextCompat.checkSelfPermission(requireContext(), ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
 		) {
 			map.isMyLocationEnabled = true
 			LocationServices.getFusedLocationProviderClient(requireContext()).lastLocation.addOnCompleteListener {
@@ -128,7 +127,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 		} else {
 			ActivityCompat.requestPermissions(
 				requireActivity(),
-				arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+				arrayOf(ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION),
 				REQUEST_LOCATION_PERMISSION
 			)
 		}
