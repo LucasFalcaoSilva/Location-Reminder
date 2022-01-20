@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.idling.CountingIdlingResource
 import java.util.UUID
 
 /**
@@ -98,5 +99,23 @@ fun DataBindingIdlingResource.monitorActivity(
 ) {
     activityScenario.onActivity {
         this.activity = it
+    }
+}
+
+object EspressoIdlingResource {
+
+    private const val RESOURCE = "GLOBAL"
+
+    @JvmField
+    val countingIdlingResource = CountingIdlingResource(RESOURCE)
+
+    fun increment() {
+        countingIdlingResource.increment()
+    }
+
+    fun decrement() {
+        if (!countingIdlingResource.isIdleNow) {
+            countingIdlingResource.decrement()
+        }
     }
 }

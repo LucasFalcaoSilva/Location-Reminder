@@ -27,7 +27,9 @@ abstract class BaseFragment : Fragment() {
 			Snackbar.make(this.view!!, it, Snackbar.LENGTH_LONG).show()
 		})
 		_viewModel.showSnackBarInt.observe(this, Observer {
-			Snackbar.make(this.view!!, getString(it), Snackbar.LENGTH_LONG).show()
+			if (it != 0) {
+				Snackbar.make(this.view!!, getString(it), Snackbar.LENGTH_LONG).show()
+			}
 		})
 
 		_viewModel.navigationCommand.observe(this, Observer { command ->
