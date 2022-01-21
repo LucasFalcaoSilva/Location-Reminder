@@ -21,8 +21,14 @@ class FakeDataSource() : ReminderDataSource {
 		reminderList.add(reminder)
 	}
 
-	override suspend fun getReminder(id: String): Result<ReminderDTO> {
-		TODO("return the reminder with the id")
+	override suspend fun getReminder(id: String): Result<ReminderDTO> = if (shouldReturnError) {
+		Result.Error("Error getReminders")
+	} else {
+		Result.Success(
+			reminderList.first {
+				it.id == id
+			}
+		)
 	}
 
 	override suspend fun deleteAllReminders() {

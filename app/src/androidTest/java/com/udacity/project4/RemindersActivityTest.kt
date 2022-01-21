@@ -1,15 +1,15 @@
 package com.udacity.project4
 
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.google.android.gms.maps.model.LatLng
@@ -22,10 +22,9 @@ import com.udacity.project4.locationreminders.reminderslist.RemindersListViewMod
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.EspressoIdlingResource
+import com.udacity.project4.util.ToastMatcher
 import com.udacity.project4.util.monitorActivity
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -108,8 +107,8 @@ class RemindersActivityTest :
 		dataBindingIdlingResource.monitorActivity(activityScenario)
 
 		Espresso.onView(withId(R.id.noDataTextView)).check(
-			ViewAssertions.matches(
-				ViewMatchers.isDisplayed()
+			matches(
+				isDisplayed()
 			)
 		)
 
@@ -123,7 +122,85 @@ class RemindersActivityTest :
 
 		Espresso.onView(withId(R.id.saveReminder)).perform(click())
 
+		Espresso.onView(withText(R.string.reminder_saved))
+			.inRoot(ToastMatcher())
+			.check(matches(isDisplayed()))
+
 		activityScenario.close()
 	}
 
+	@Test
+	fun emptyList_addReminder_no_location() = runBlocking {
+		val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+		dataBindingIdlingResource.monitorActivity(activityScenario)
+
+		Espresso.onView(withId(R.id.noDataTextView)).check(
+			matches(
+				isDisplayed()
+			)
+		)
+
+		Espresso.onView(withId(R.id.addReminderFAB)).perform(click())
+
+		Espresso.onView(withId(R.id.reminderTitle)).perform(ViewActions.typeText("Title"))
+		Espresso.onView(withId(R.id.reminderDescription))
+			.perform(ViewActions.typeText("Description"))
+
+		Espresso.closeSoftKeyboard()
+
+		Espresso.onView(withId(R.id.saveReminder)).perform(click())
+
+		Espresso.onView(withId(com.google.android.material.R.id.snackbar_text))
+			.check(matches(withText(R.string.err_select_location)))
+
+		activityScenario.close()
+	}
+
+	@Test
+	fun emptyList_addReminder_no_description() = runBlocking {
+		val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+		dataBindingIdlingResource.monitorActivity(activityScenario)
+
+		Espresso.onView(withId(R.id.noDataTextView)).check(
+			matches(
+				isDisplayed()
+			)
+		)
+
+		Espresso.onView(withId(R.id.addReminderFAB)).perform(click())
+
+		Espresso.onView(withId(R.id.reminderTitle)).perform(ViewActions.typeText("Title"))
+
+		Espresso.closeSoftKeyboard()
+
+		Espresso.onView(withId(R.id.saveReminder)).perform(click())
+
+		Espresso.onView(withId(com.google.android.material.R.id.snackbar_text))
+			.check(matches(withText(R.string.err_enter_description)))
+
+		activityScenario.close()
+	}
+
+
+	@Test
+	fun emptyList_addReminder_no_title() = runBlocking {
+		val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+		dataBindingIdlingResource.monitorActivity(activityScenario)
+
+		Espresso.onView(withId(R.id.noDataTextView)).check(
+			matches(
+				isDisplayed()
+			)
+		)
+
+		Espresso.onView(withId(R.id.addReminderFAB)).perform(click())
+		Espresso.closeSoftKeyboard()
+
+		Espresso.onView(withId(R.id.saveReminder)).perform(click())
+
+		Espresso.onView(withId(com.google.android.material.R.id.snackbar_text))
+			.check(matches(withText(R.string.err_enter_description)))
+
+		activityScenario.close()
+	}
 }
